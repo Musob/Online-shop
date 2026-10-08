@@ -1,20 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Routes, Route, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import ProductCard from "./components/ProductCard";
 import Cart from "./components/Cart";
 import AdminPanel from "./components/AdminPanel";
+import AdminProductPage from "./components/AdminProductPage";
 
 const API_URL = "http://localhost:5000/api";
 
 function App() {
   const [products, setProducts] = useState([]);
+  const [adminProducts, setAdminProducts] = useState([]);
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   // Mahsulotlarni yuklash
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     try {
       const response = await axios.get(`${API_URL}/products`);
       setProducts(response.data);
@@ -23,11 +25,21 @@ function App() {
       console.error("Mahsulotlarni yuklashda xatolik:", error);
       setLoading(false);
     }
-  };
+  }, []);
+
+  const fetchAdminProducts = useCallback(async () => {
+    try {
+      const response = await axios.get(`${API_URL}/admin/products`);
+      setAdminProducts(response.data);
+    } catch (error) {
+      console.error("Admin mahsulotlarini yuklashda xatolik:", error);
+    }
+  }, []);
 
   useEffect(() => {
     fetchProducts();
-  }, []);
+    fetchAdminProducts();
+  }, [fetchProducts, fetchAdminProducts]);
 
   // Savatga qo'shish
   const addToCart = (product) => {
@@ -107,7 +119,7 @@ function App() {
   const handleAddProduct = async (productData) => {
     try {
       await axios.post(`${API_URL}/products`, productData);
-      await fetchProducts();
+      await Promise.all([fetchProducts(), fetchAdminProducts()]);
       alert("Mahsulot muvaffaqiyatli qo'shildi!");
     } catch (error) {
       console.error("Mahsulot qo'shishda xatolik:", error);
@@ -116,6 +128,54 @@ function App() {
           "Backend serveriga ulanib bo'lmadi. Server va MySQL ishlayotganini tekshiring.",
       );
       throw error;
+    }
+  };
+
+  const handleGetAdminProduct = useCallback(async (productId) => {
+    const response = await axios.get(`${API_URL}/admin/products/${productId}`);
+    return response.data;
+  }, []);
+
+  const handleUpdateProduct = useCallback(async (productId, productData) => {
+    try {
+      const response = await axios.put(
+        `${API_URL}/admin/products/${productId}`,
+        productData,
+      );
+      await Promise.all([fetchProducts(), fetchAdminProducts()]);
+      return response.data;
+    } catch (error) {
+      console.error("Mahsulotni tahrirlashda xatolik:", error);
+      alert(error.response?.data?.message || "Mahsulotni saqlab bo'lmadi");
+      throw error;
+    }
+  }, [fetchProducts, fetchAdminProducts]);
+
+  const handleToggleProductVisibility = async (product) => {
+    try {
+      await axios.patch(
+        `${API_URL}/admin/products/${product.id}/visibility`,
+        { is_visible: !Boolean(product.is_visible) },
+      );
+      await Promise.all([fetchProducts(), fetchAdminProducts()]);
+    } catch (error) {
+      console.error("Mahsulot ko'rinishini o'zgartirishda xatolik:", error);
+      alert(error.response?.data?.message || "Ko'rinish holatini o'zgartirib bo'lmadi");
+    }
+  };
+
+  const handleDeleteProduct = async (productId) => {
+    if (!window.confirm("Bu mahsulotni butunlay o'chirmoqchimisiz?")) return false;
+
+    try {
+      await axios.delete(`${API_URL}/admin/products/${productId}`);
+      setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
+      await Promise.all([fetchProducts(), fetchAdminProducts()]);
+      return true;
+    } catch (error) {
+      console.error("Mahsulotni o'chirishda xatolik:", error);
+      alert(error.response?.data?.message || "Mahsulotni o'chirib bo'lmadi");
+      return false;
     }
   };
 
@@ -187,7 +247,23 @@ function App() {
         <Route
           path="/admin"
           element={
-            <AdminPanel products={products} onAddProduct={handleAddProduct} />
+            <AdminPanel
+              products={adminProducts}
+              onAddProduct={handleAddProduct}
+              onToggleVisibility={handleToggleProductVisibility}
+              onDeleteProduct={handleDeleteProduct}
+            />
+          }
+        />
+        <Route
+          path="/admin/products/:productId"
+          element={
+            <AdminProductPage
+              onGetProduct={handleGetAdminProduct}
+              onUpdateProduct={handleUpdateProduct}
+              onToggleVisibility={handleToggleProductVisibility}
+              onDeleteProduct={handleDeleteProduct}
+            />
           }
         />
       </Routes>
