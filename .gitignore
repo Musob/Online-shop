@@ -7,3 +7,6 @@ node_modules/
 # Build files (agar bo'lsa)
 build/
 dist/
+
+# Uploaded product images are stored by the backend at runtime
+/backend/uploads/
