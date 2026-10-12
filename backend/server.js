@@ -367,6 +367,23 @@ app.get('/api/products', async (req, res) => {
   }
 });
 
+// GET - Do'konda ko'rinadigan bitta mahsulot
+app.get('/api/products/:id', async (req, res) => {
+  try {
+    const [rows] = await pool.query(
+      'SELECT * FROM products WHERE id = ? AND is_visible = 1',
+      [req.params.id]
+    );
+    if (rows.length === 0) {
+      return res.status(404).json({ message: 'Mahsulot topilmadi' });
+    }
+    res.json(rows[0]);
+  } catch (error) {
+    console.error('Mahsulotni olishda xatolik:', error);
+    res.status(500).json({ message: 'Mahsulotni yuklab bo\'lmadi' });
+  }
+});
+
 // GET - Admin uchun barcha mahsulotlar
 app.get('/api/admin/products', async (req, res) => {
   const requestedPage = Number.parseInt(req.query.page, 10);

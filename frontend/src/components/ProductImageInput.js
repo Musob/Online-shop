@@ -43,67 +43,28 @@ function ProductImageInput({ image, imageFile, onImageChange, onFileChange }) {
   const previewSource = filePreview || getProductImageUrl(image);
 
   return (
-    <div className="space-y-3">
-      <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_9rem]">
-        <div>
-          <label className="mb-1 block text-sm font-semibold text-slate-700">
-            Rasm yuklash <span className="font-normal text-slate-500">(tavsiya qilinadi)</span>
-          </label>
-          <label className="flex min-h-24 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-violet-200 bg-violet-50/50 px-4 py-4 text-center transition hover:border-violet-400 hover:bg-violet-50">
-            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="mb-2 h-6 w-6 text-violet-700">
-              <path d="M12 16V4m0 0L7 9m5-5 5 5" />
-              <path d="M5 14v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-5" />
-            </svg>
-            <span className="text-sm font-semibold text-violet-800">
-              {imageFile ? "Boshqa rasm tanlash" : "Kompyuterdan rasm tanlang"}
-            </span>
-            <span className="mt-1 text-xs text-slate-500">JPG yoki PNG, 5 MB gacha</span>
-            <input
-              type="file"
-              accept=".jpg,.jpeg,.png,image/jpeg,image/png"
-              onChange={handleFileChange}
-              className="sr-only"
-            />
-          </label>
-          {imageFile && (
-            <div className="mt-2 flex items-center justify-between gap-3 text-xs text-slate-600">
-              <span className="min-w-0 truncate">{imageFile.name}</span>
-              <button
-                type="button"
-                onClick={() => {
-                  onFileChange(null);
-                  setFileError("");
-                }}
-                className="shrink-0 font-semibold text-rose-600 hover:text-rose-800"
-              >
-                Olib tashlash
-              </button>
-            </div>
-          )}
-        </div>
-
-        <div>
-          <span className="mb-1 block text-sm font-semibold text-slate-700">Rasm ko'rinishi</span>
-          <div className="aspect-[3/4] overflow-hidden rounded-xl bg-[#f2f4f7] p-2">
-            <img
-              src={previewSource}
-              alt="Mahsulot rasmi ko'rinishi"
-              className="h-full w-full object-contain"
-              onError={(event) => {
-                event.currentTarget.onerror = null;
-                event.currentTarget.src = PRODUCT_IMAGE_FALLBACK;
-              }}
-            />
-          </div>
-        </div>
+    <div className="grid items-end gap-2 sm:grid-cols-[minmax(150px,0.7fr)_minmax(0,2fr)_3.25rem]">
+      <div>
+        <span className="mb-1 block text-xs font-semibold text-slate-800">Rasm yuklash</span>
+        <label className="flex h-10 cursor-pointer items-center justify-center gap-2 rounded-lg border border-slate-300 bg-slate-50 px-3 text-xs font-semibold text-slate-800 transition hover:border-indigo-500 hover:bg-indigo-50 focus-within:ring-2 focus-within:ring-indigo-200">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-4 w-4 shrink-0 text-indigo-800">
+            <path d="M12 16V4m0 0L7 9m5-5 5 5" />
+            <path d="M5 14v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-5" />
+          </svg>
+          <span className="truncate">{imageFile ? imageFile.name : "JPG / PNG tanlash"}</span>
+          <input
+            type="file"
+            accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+            onChange={handleFileChange}
+            className="sr-only"
+          />
+        </label>
       </div>
 
-      <label className="block">
-        <span className="mb-1 block text-sm font-semibold text-slate-700">
-          Yoki rasm havolasini kiriting
-        </span>
+      <label className="block min-w-0">
+        <span className="mb-1 block text-xs font-semibold text-slate-800">Yoki rasm havolasi</span>
         <input
-          type="text"
+          type="url"
           inputMode="url"
           name="image"
           value={image}
@@ -113,11 +74,36 @@ function ProductImageInput({ image, imageFile, onImageChange, onFileChange }) {
             setFileError("");
           }}
           placeholder="https://example.com/rasm.jpg"
-          className="min-h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm outline-none transition focus:border-violet-400 focus:bg-white focus:ring-4 focus:ring-violet-100"
+          className="h-10 w-full rounded-lg border border-slate-300 bg-slate-50 px-3 text-sm text-slate-950 outline-none transition placeholder:text-slate-500 focus:border-indigo-600 focus:bg-white focus:ring-2 focus:ring-indigo-100"
         />
       </label>
+
+      <div className="relative hidden h-[3.25rem] w-[3.25rem] overflow-hidden rounded-lg border border-slate-300 bg-slate-100 p-1 sm:block">
+        <img
+          src={previewSource}
+          alt="Mahsulot rasmi ko'rinishi"
+          className="h-full w-full object-contain"
+          onError={(event) => {
+            event.currentTarget.onerror = null;
+            event.currentTarget.src = PRODUCT_IMAGE_FALLBACK;
+          }}
+        />
+        {imageFile && (
+          <button
+            type="button"
+            onClick={() => {
+              onFileChange(null);
+              setFileError("");
+            }}
+            aria-label="Tanlangan rasmni olib tashlash"
+            className="absolute right-0.5 top-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-slate-900/80 text-xs font-bold text-white hover:bg-rose-700"
+          >
+            ×
+          </button>
+        )}
+      </div>
       {fileError && (
-        <p role="alert" className="text-sm text-rose-600">
+        <p role="alert" className="text-xs text-rose-700 sm:col-span-3">
           {fileError}
         </p>
       )}

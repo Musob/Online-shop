@@ -68,123 +68,70 @@ function AdminPanel({
   };
 
   return (
-    <main className="mx-auto max-w-[1440px] px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
-      <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
+    <main className="min-h-screen bg-slate-100 px-3 py-4 sm:px-5 lg:px-7 lg:py-5">
+      <div className="mx-auto max-w-[1440px]">
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-3 rounded-xl bg-slate-900 px-4 py-3 text-white shadow-sm sm:px-5">
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.16em] text-violet-700">
+          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-300">
             Boshqaruv
           </p>
-          <h1 className="mt-1 text-3xl font-extrabold tracking-tight text-slate-900">
+          <h1 className="mt-0.5 text-xl font-extrabold tracking-tight text-white">
             Admin panel
           </h1>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-0.5 text-xs text-slate-300">
             Mahsulotlar, kategoriyalar va do'kondagi ko'rinishni boshqaring.
           </p>
         </div>
         <Link
           to="/"
-          className="inline-flex min-h-10 items-center rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:border-violet-200 hover:bg-violet-50 hover:text-violet-800"
+          className="inline-flex min-h-9 items-center rounded-lg border border-slate-600 bg-slate-800 px-3 text-xs font-semibold text-slate-100 transition hover:border-slate-400 hover:bg-slate-700"
         >
           Do'konga qaytish
         </Link>
       </div>
 
-      <section aria-label="Umumiy ko'rsatkichlar" className="mb-6 grid gap-3 sm:grid-cols-3">
+      <section aria-label="Umumiy ko'rsatkichlar" className="mb-3 grid grid-cols-3 gap-2">
         {[
-          ["Jami mahsulot", productStats.total, "bg-violet-50 text-violet-800"],
-          ["Do'konda ko'rinadi", productStats.visible, "bg-emerald-50 text-emerald-800"],
-          ["Omborda mavjud", productStats.inStock, "bg-indigo-50 text-indigo-800"],
+          ["Jami mahsulot", productStats.total, "border-l-violet-400"],
+          ["Do'konda ko'rinadi", productStats.visible, "border-l-emerald-400"],
+          ["Omborda mavjud", productStats.inStock, "border-l-sky-400"],
         ].map(([label, value, color]) => (
-          <div key={label} className="rounded-2xl border border-slate-200 bg-white p-4">
-            <p className="text-sm font-medium text-slate-500">{label}</p>
-            <p className={`mt-2 inline-flex min-w-10 items-center justify-center rounded-lg px-3 py-1 text-xl font-extrabold ${color}`}>
+          <div key={label} className={`rounded-xl border border-slate-700 border-l-4 bg-slate-800 px-3 py-2 text-white sm:px-4 ${color}`}>
+            <p className="truncate text-[10px] font-semibold text-slate-300 sm:text-xs">{label}</p>
+            <p className="mt-0.5 text-lg font-extrabold sm:text-xl">
               {value}
             </p>
           </div>
         ))}
       </section>
 
-      <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
-        <div className="space-y-6">
-          <CategoryManager
-            categories={categories}
-            onAddCategory={onAddCategory}
-            onUpdateCategory={onUpdateCategory}
-            onDeleteCategory={onDeleteCategory}
-          />
-
-          <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-            <div className="mb-5">
-              <p className="text-xs font-bold uppercase tracking-[0.14em] text-violet-700">
-                Mahsulotlar
-              </p>
-              <h2 className="mt-1 text-lg font-extrabold text-slate-900">
-                Yangi mahsulot qo'shish
-              </h2>
-            </div>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <label className="block">
-                <span className="mb-1.5 block text-sm font-semibold text-slate-700">Nomi</span>
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  placeholder="Mahsulot nomi"
-                  required
-                  className="min-h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm outline-none transition placeholder:text-slate-400 focus:border-violet-400 focus:bg-white focus:ring-4 focus:ring-violet-100"
-                />
-              </label>
-
-              <div className="grid gap-4 sm:grid-cols-2">
-                <label className="block">
-                  <span className="mb-1.5 block text-sm font-semibold text-slate-700">Narxi ($)</span>
-                  <input
-                    type="number"
-                    name="price"
-                    value={formData.price}
-                    onChange={handleChange}
-                    placeholder="99.99"
-                    step="0.01"
-                    min="0"
-                    required
-                    className="min-h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm outline-none transition focus:border-violet-400 focus:bg-white focus:ring-4 focus:ring-violet-100"
-                  />
-                </label>
-                <label className="block">
-                  <span className="mb-1.5 block text-sm font-semibold text-slate-700">Ombordagi soni</span>
-                  <input
-                    type="number"
-                    name="stock"
-                    value={formData.stock}
-                    onChange={handleChange}
-                    placeholder="10"
-                    min="0"
-                    step="1"
-                    required
-                    className="min-h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm outline-none transition focus:border-violet-400 focus:bg-white focus:ring-4 focus:ring-violet-100"
-                  />
-                </label>
-              </div>
-
-              <label className="block">
-                <span className="mb-1.5 block text-sm font-semibold text-slate-700">Kategoriya</span>
-                <select
-                  name="category"
-                  value={formData.category}
-                  onChange={handleChange}
-                  required
-                  className="min-h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm outline-none transition focus:border-violet-400 focus:bg-white focus:ring-4 focus:ring-violet-100"
-                >
-                  {!categoryOptions.some((category) => category.name === formData.category) && (
-                    <option value={formData.category}>{formData.category}</option>
-                  )}
-                  {categoryOptions.map((category) => (
-                    <option key={category.id} value={category.name}>{category.path}</option>
-                  ))}
-                </select>
-              </label>
-
+      <section className="mb-3 rounded-xl border border-slate-300 bg-white p-3 shadow-sm sm:p-4">
+        <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-indigo-800">
+              Mahsulotlar
+            </p>
+            <h2 className="mt-0.5 text-base font-extrabold text-slate-950">
+              Yangi mahsulot qo'shish
+            </h2>
+          </div>
+          <p className="text-xs text-slate-600">Maydonlarni to'ldiring va saqlang.</p>
+        </div>
+        <form onSubmit={handleSubmit} className="space-y-2.5">
+          <div className="grid items-end gap-x-3 gap-y-2 md:grid-cols-3">
+            <label className="block">
+              <span className="mb-1 block text-xs font-semibold text-slate-800">Nomi</span>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="Mahsulot nomi"
+                required
+                className="h-10 w-full rounded-lg border border-slate-300 bg-slate-50 px-3 text-sm text-slate-950 outline-none transition placeholder:text-slate-500 focus:border-indigo-600 focus:bg-white focus:ring-2 focus:ring-indigo-100"
+              />
+            </label>
+            <div className="min-w-0 md:col-span-2">
               <ProductImageInput
                 image={formData.image}
                 imageFile={imageFile}
@@ -193,37 +140,91 @@ function AdminPanel({
                 }
                 onFileChange={setImageFile}
               />
-
-              {productError && (
-                <p role="alert" className="rounded-xl border border-rose-100 bg-rose-50 p-3 text-sm text-rose-700">
-                  {productError}
-                </p>
-              )}
-
-              <button
-                type="submit"
-                disabled={isAddingProduct}
-                className="min-h-12 w-full rounded-xl bg-violet-700 px-5 py-3 text-sm font-bold text-white transition hover:bg-violet-800 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-violet-200 disabled:cursor-wait disabled:opacity-60 sm:w-auto"
+            </div>
+            <label className="block">
+              <span className="mb-1 block text-xs font-semibold text-slate-800">Kategoriya</span>
+              <select
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+                required
+                className="h-10 w-full rounded-lg border border-slate-300 bg-slate-50 px-3 text-sm text-slate-950 outline-none transition focus:border-indigo-600 focus:bg-white focus:ring-2 focus:ring-indigo-100"
               >
-                {isAddingProduct ? "Saqlanmoqda..." : "Mahsulotni qo'shish"}
-              </button>
-            </form>
-          </section>
-        </div>
+                {!categoryOptions.some((category) => category.name === formData.category) && (
+                  <option value={formData.category}>{formData.category}</option>
+                )}
+                {categoryOptions.map((category) => (
+                  <option key={category.id} value={category.name}>{category.path}</option>
+                ))}
+              </select>
+            </label>
+            <label className="block">
+              <span className="mb-1 block text-xs font-semibold text-slate-800">Narxi ($)</span>
+              <input
+                type="number"
+                name="price"
+                value={formData.price}
+                onChange={handleChange}
+                placeholder="99.99"
+                step="0.01"
+                min="0"
+                required
+                className="h-10 w-full rounded-lg border border-slate-300 bg-slate-50 px-3 text-sm text-slate-950 outline-none transition focus:border-indigo-600 focus:bg-white focus:ring-2 focus:ring-indigo-100"
+              />
+            </label>
+            <label className="block">
+              <span className="mb-1 block text-xs font-semibold text-slate-800">Ombordagi soni</span>
+              <input
+                type="number"
+                name="stock"
+                value={formData.stock}
+                onChange={handleChange}
+                placeholder="10"
+                min="0"
+                step="1"
+                required
+                className="h-10 w-full rounded-lg border border-slate-300 bg-slate-50 px-3 text-sm text-slate-950 outline-none transition focus:border-indigo-600 focus:bg-white focus:ring-2 focus:ring-indigo-100"
+              />
+            </label>
+          </div>
 
-        <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-          <div className="flex flex-wrap items-end justify-between gap-3 border-b border-slate-100 px-5 py-5 sm:px-6">
+          {productError && (
+            <p role="alert" className="rounded-xl border border-rose-100 bg-rose-50 p-3 text-sm text-rose-700">
+              {productError}
+            </p>
+          )}
+
+          <button
+            type="submit"
+            disabled={isAddingProduct}
+            className="min-h-10 rounded-lg bg-indigo-800 px-5 py-2 text-sm font-bold text-white transition hover:bg-indigo-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-300 disabled:cursor-wait disabled:opacity-60"
+          >
+            {isAddingProduct ? "Saqlanmoqda..." : "Mahsulotni qo'shish"}
+          </button>
+        </form>
+      </section>
+
+      <div className="grid items-start gap-3 xl:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
+        <CategoryManager
+          categories={categories}
+          onAddCategory={onAddCategory}
+          onUpdateCategory={onUpdateCategory}
+          onDeleteCategory={onDeleteCategory}
+        />
+
+        <section className="overflow-hidden rounded-xl border border-slate-300 bg-white shadow-sm">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 bg-slate-50 px-3 py-3 sm:px-4">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.14em] text-violet-700">
+              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-indigo-800">
                 Inventar
               </p>
-              <h2 className="mt-1 text-lg font-extrabold text-slate-900">
+              <h2 className="mt-0.5 text-base font-extrabold text-slate-950">
                 So'nggi {products.length} ta mahsulot
               </h2>
             </div>
             <Link
               to="/admin/products"
-              className="inline-flex min-h-10 items-center gap-2 rounded-xl bg-violet-50 px-3 text-sm font-bold text-violet-800 transition hover:bg-violet-100"
+              className="inline-flex min-h-9 items-center gap-2 rounded-lg bg-slate-800 px-3 text-xs font-bold text-white transition hover:bg-indigo-900"
             >
               Mahsulotlar ro'yxati
               <span aria-hidden="true">→</span>
@@ -237,7 +238,7 @@ function AdminPanel({
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full min-w-[760px] text-left">
-                <thead className="bg-slate-50 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                <thead className="bg-slate-800 text-[11px] font-bold uppercase tracking-wider text-slate-100">
                   <tr>
                     <th className="px-4 py-3">Mahsulot</th>
                     <th className="px-4 py-3">Kategoriya</th>
@@ -252,7 +253,7 @@ function AdminPanel({
                     const isVisible = Boolean(product.is_visible);
                     const isInStock = Number(product.stock) > 0;
                     return (
-                      <tr key={product.id} className="transition hover:bg-slate-50/70">
+                      <tr key={product.id} className="transition odd:bg-white even:bg-slate-50/70 hover:bg-indigo-50">
                         <td className="px-4 py-3">
                           <div className="flex min-w-[200px] items-center gap-3">
                             <img
@@ -267,13 +268,13 @@ function AdminPanel({
                               }}
                             />
                             <div className="min-w-0">
-                              <p className="truncate text-sm font-bold text-slate-900">{product.name}</p>
+                              <p className="truncate text-sm font-bold text-slate-950">{product.name}</p>
                               <p className="mt-0.5 text-xs text-slate-400">#{product.id}</p>
                             </div>
                           </div>
                         </td>
-                        <td className="px-4 py-3 text-sm text-slate-600">{getCategoryPath(categories, product.category || "Boshqa")}</td>
-                        <td className="whitespace-nowrap px-4 py-3 text-sm font-bold text-slate-800">
+                        <td className="px-4 py-3 text-sm text-slate-700">{getCategoryPath(categories, product.category || "Boshqa")}</td>
+                        <td className="whitespace-nowrap px-4 py-3 text-sm font-bold text-slate-950">
                           ${Number(product.price).toFixed(2)}
                         </td>
                         <td className="px-4 py-3">
@@ -346,6 +347,7 @@ function AdminPanel({
             </div>
           )}
         </section>
+      </div>
       </div>
     </main>
   );

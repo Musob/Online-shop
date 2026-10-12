@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useCallback } from "react";
+﻿import React, { useState, useEffect, useCallback } from "react";
 import { Routes, Route, Link, useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import ProductCard from "./components/ProductCard";
+import ProductDetailPage from "./components/ProductDetailPage";
 import Cart from "./components/Cart";
 import AdminPanel from "./components/AdminPanel";
 import AdminProductsPage from "./components/AdminProductsPage";
@@ -18,7 +19,7 @@ const normalizeFilterText = (value) =>
   String(value || "")
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[ʻʼ’‘`´]/g, "")
+    .replace(/[Ê»Ê¼â€™â€˜`Â´]/g, "")
     .toLocaleLowerCase()
     .replace(/\s+/g, " ")
     .trim();
@@ -213,6 +214,11 @@ function App() {
 
   const handleGetAdminProduct = useCallback(async (productId) => {
     const response = await axios.get(`${API_URL}/admin/products/${productId}`);
+    return response.data;
+  }, []);
+
+  const handleGetStoreProduct = useCallback(async (productId) => {
+    const response = await axios.get(`${API_URL}/products/${productId}`);
     return response.data;
   }, []);
 
@@ -549,7 +555,7 @@ function App() {
         <Route
           path="/"
           element={
-            <main className="mx-auto max-w-[1440px] px-4 pb-14 pt-7 sm:px-6 lg:px-8">
+            <main className="mx-auto max-w-[1440px] px-5 pb-14 pt-5 sm:px-8 lg:px-10">
               <div className="relative mb-6 overflow-hidden rounded-3xl bg-gradient-to-r from-[#4c1d95] via-violet-700 to-[#6d28d9] px-5 py-7 text-white shadow-lg shadow-violet-900/10 sm:px-8 sm:py-9">
                 <div aria-hidden="true" className="absolute -right-10 -top-16 h-56 w-56 rounded-full border-[28px] border-white/10" />
                 <div className="relative max-w-3xl">
@@ -565,7 +571,8 @@ function App() {
                 </div>
               </div>
 
-              <div className="grid items-start gap-5 lg:grid-cols-[250px_minmax(0,1fr)] xl:gap-7">
+              <div className={`${searchTerm.trim() ? "grid items-start gap-5 lg:grid-cols-[250px_minmax(0,1fr)] xl:gap-7" : "block"}`}>
+                {searchTerm.trim() && (
                 <aside className={`${mobileFiltersOpen ? "block" : "hidden"} rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5 lg:block`}>
                   <div className="mb-4 flex items-center justify-between">
                     <h3 className="text-base font-extrabold text-slate-900">Filtrlar</h3>
@@ -679,6 +686,7 @@ function App() {
                     Faqat mavjud mahsulotlar
                   </label>
                 </aside>
+                )}
 
                 <section aria-label="Mahsulotlar">
                   <div className="mb-4 flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
@@ -727,7 +735,7 @@ function App() {
                           onClick={() => updateProductFilters("category", "")}
                           className="inline-flex items-center gap-2 rounded-full bg-violet-100 px-3 py-1.5 text-xs font-semibold text-violet-800"
                         >
-                          {selectedCategory} <span aria-hidden="true">×</span>
+                          {selectedCategory} <span aria-hidden="true">Ã—</span>
                         </button>
                       )}
                       {(minPrice || maxPrice) && (
@@ -736,7 +744,7 @@ function App() {
                           onClick={clearPriceFilters}
                           className="inline-flex items-center gap-2 rounded-full bg-violet-100 px-3 py-1.5 text-xs font-semibold text-violet-800"
                         >
-                          ${minPrice || "0"} – ${maxPrice || "∞"} <span aria-hidden="true">×</span>
+                          ${minPrice || "0"} â€“ ${maxPrice || "âˆž"} <span aria-hidden="true">Ã—</span>
                         </button>
                       )}
                       {inStockOnly && (
@@ -745,7 +753,7 @@ function App() {
                           onClick={() => updateProductFilters("inStock", "")}
                           className="inline-flex items-center gap-2 rounded-full bg-emerald-100 px-3 py-1.5 text-xs font-semibold text-emerald-800"
                         >
-                          Mavjud <span aria-hidden="true">×</span>
+                          Mavjud <span aria-hidden="true">Ã—</span>
                         </button>
                       )}
                       {searchTerm && (
@@ -754,14 +762,14 @@ function App() {
                           onClick={() => updateProductFilters("search", "")}
                           className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-700"
                         >
-                          Qidiruv: {searchTerm} <span aria-hidden="true">×</span>
+                          Qidiruv: {searchTerm} <span aria-hidden="true">Ã—</span>
                         </button>
                       )}
                     </div>
                   )}
 
                   {filteredProducts.length > 0 ? (
-                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+                    <div className="mx-auto grid w-full max-w-[1160px] grid-cols-2 gap-x-4 gap-y-7 sm:grid-cols-3 sm:gap-x-5 xl:grid-cols-4 xl:gap-x-6">
                       {filteredProducts.map((product) => (
                         <ProductCard
                           key={product.id}
@@ -808,6 +816,16 @@ function App() {
               onCheckout={handleCheckout}
               checkoutMessage={checkoutMessage}
               isCheckingOut={isCheckingOut}
+            />
+          }
+        />
+        <Route
+          path="/products/:productId"
+          element={
+            <ProductDetailPage
+              categories={categories}
+              onGetProduct={handleGetStoreProduct}
+              onAddToCart={addToCart}
             />
           }
         />

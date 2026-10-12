@@ -52,11 +52,11 @@ function Cart({
 
   return (
     <main className="mx-auto w-full max-w-[1440px] px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
-      <div className="mb-7">
+      <div className="mb-5">
         <p className="text-xs font-bold uppercase tracking-[0.16em] text-violet-700">
           Xaridlaringiz
         </p>
-        <h1 className="mt-1 text-3xl font-extrabold tracking-tight text-slate-900">
+        <h1 className="mt-1 text-2xl font-extrabold tracking-tight text-slate-900">
           Savatingiz
         </h1>
         <p className="mt-1 text-sm text-slate-500">
@@ -64,7 +64,7 @@ function Cart({
         </p>
       </div>
 
-      <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_380px] xl:gap-8">
+      <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_320px] xl:gap-6">
         <section
           aria-label="Savatdagi mahsulotlar"
           className="overflow-hidden rounded-2xl border border-slate-200 bg-white"
@@ -72,29 +72,35 @@ function Cart({
           {cart.map((item, index) => (
             <article
               key={item.id}
-              className={`flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:gap-6 sm:p-6 lg:p-7 ${
+              className={`flex flex-col gap-3 p-3 sm:flex-row sm:items-center sm:gap-4 sm:p-4 ${
                 index < cart.length - 1 ? "border-b border-slate-100" : ""
               }`}
             >
-              <img
-                src={getProductImageUrl(item.image)}
-                alt={item.name}
-                loading="lazy"
-                decoding="async"
-                className="h-48 w-40 shrink-0 rounded-2xl bg-[#f2f4f7] p-3 object-contain sm:h-52 sm:w-44"
-                onError={(event) => {
-                  event.currentTarget.onerror = null;
-                  event.currentTarget.src = getProductImageUrl("");
-                }}
-              />
+              <Link
+                to={`/products/${item.id}`}
+                aria-label={`${item.name} mahsuloti haqida batafsil`}
+                className="block w-fit shrink-0 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400"
+              >
+                <img
+                  src={getProductImageUrl(item.image)}
+                  alt={item.name}
+                  loading="lazy"
+                  decoding="async"
+                  className="h-28 w-24 rounded-lg bg-[#f2f4f7] p-2 object-contain sm:h-32 sm:w-28"
+                  onError={(event) => {
+                    event.currentTarget.onerror = null;
+                    event.currentTarget.src = getProductImageUrl("");
+                  }}
+                />
+              </Link>
 
               <div className="min-w-0 flex-1">
                 <p className="text-xs font-semibold text-violet-700">
                   {getCategoryPath(categories, item.category || "Boshqa")}
                 </p>
-                <h2 className="mt-1 truncate font-bold text-slate-900">
+                <Link to={`/products/${item.id}`} className="mt-1 line-clamp-2 font-bold text-slate-900 hover:text-violet-800">
                   {item.name}
-                </h2>
+                </Link>
                 <p className="mt-1 text-sm text-slate-500">
                   ${Number(item.price).toFixed(2)} · Omborda {item.stock} ta
                 </p>
